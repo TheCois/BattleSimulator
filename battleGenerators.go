@@ -97,7 +97,7 @@ func (g DefaultTinyGenerator) create() world {
 	battleField := generateWorld(10, 10, 64)
 
 	ttZ := generateBand(battleField, 1, 1, 4, 7)
-	ttZ.fillWith(4, zombieKind, 2, Uniform, r1)
+	ttZ.fillWith(20, zombieKind, 2, Uniform, r1)
 
 	ttT := generateBand(battleField, 8, 8, 5, 5)
 	ttT.fillWith(1, archerKind, 1, Uniform, r1)

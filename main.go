@@ -28,6 +28,14 @@ func main() {
 	generator = DefaultTinyGenerator{1234}
 	battleField := generator.create()
 
+	fmt.Println("Starting Units")
+	ts := getLiveUnitCounts(battleField)
+	for team, ks := range ts {
+		fmt.Println("Team", team)
+		for kind, uc := range ks {
+			fmt.Println(kind.name, ":", uc)
+		}
+	}
 	startTime := time.Now()
 	fmt.Println("Start time:", startTime)
 	round := 1
@@ -42,6 +50,15 @@ func main() {
 		// TODO display counts for each team
 		round++
 	}
+
 	endTime := time.Now()
 	fmt.Println("End time  :", endTime, "Elapsed", time.Since(startTime))
+	fmt.Println("Units still alive")
+	ts = getLiveUnitCounts(battleField)
+	for team, ks := range ts {
+		fmt.Println("Team", team)
+		for kind, uc := range ks {
+			fmt.Println(kind.name, ":", uc)
+		}
+	}
 }

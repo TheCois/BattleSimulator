@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 )
@@ -54,7 +53,6 @@ func runRound(w *world, rnd *rand.Rand) bool {
 				np := mc.lastPath[max(1, u.kind.moveSpeed)]
 				log.Println("Preparing move for", u.id, "from", u.position, "to", np)
 				moves = append(moves, move{u, np})
-				fmt.Println(moves)
 			} else {
 				log.Println("\tNo potential destination found")
 			}
