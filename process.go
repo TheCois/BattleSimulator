@@ -1,47 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 )
 
-// generates an empty World of w times l cells
-// s is the number of slots held in each cell
-// should precompute the neighbours of each cell
-func generateWorld(w int, l int, s int) world {
-	wo := world{
-		length:       l,
-		width:        w,
-		terrain:      make([][]cell, l),
-		cells:        make(map[int64]cell),
-		liveUnits:    make(map[int64]unit),
-		slotsPerCell: s}
-	log.Println("Generating a field of", l, "rows and", w, "columns")
-	for i := 0; i < l; i++ {
-		wo.terrain[i] = make([]cell, w)
-		for j := 0; j < w; j++ {
-			ni := nextId()
-			c := cell{
-				ni,
-				make(map[int64]*unit, 0),
-				coordinates{j, i},
-				0,
-				make([]int64, 0),
-			}
-			wo.terrain[i][j] = c
-			wo.cells[ni] = c
-		}
-	}
-	log.Println("World has", len(wo.cells), "cells")
-	return wo
-}
-
 func runRound(w *world, rnd *rand.Rand) bool {
 	hits := make([]hitZone, 0)
 	moves := make([]move, 0)
-	log.Println("Running round with:", len(w.liveUnits), "Live units")
+	log.Println("Running a round with:", len(w.liveUnits), "Live units")
 	for _, u := range w.liveUnits {
-		log.Println("Considering unit", u.kind.name, "at position", u.position)
+		log.Println("Considering unit", u.id, "(", u.kind.name, ")", "at position", u.position)
 		v := map[int]bool{u.position.row*w.width + u.position.col: true}
 		nc := []coordinates{u.position}
 		foundTarget := false
@@ -70,23 +40,28 @@ func runRound(w *world, rnd *rand.Rand) bool {
 		} else if u.kind.moveSpeed > 0 {
 			log.Println("\tNo target found, but can move")
 			u.roundsSinceLastAttack++
-			foundEnemy := false
+			foundDestination := false
 			mc := moveChecker{w, u, nil}
-			for r := 1; (r <= u.kind.perception) && !foundEnemy; r++ {
-				foundEnemy, nc, _ = scanWithMap(w, v, nc, &mc)
-				if !foundEnemy {
+			for r := 1; (r <= u.kind.perception) && !foundDestination; r++ {
+				foundDestination, nc, _ = scanWithMap(w, v, nc, &mc)
+				if !foundDestination {
 					for _, c := range nc {
 						v[c.row*w.width+c.col] = true
 					}
 				}
 			}
-			if foundEnemy {
+			if foundDestination {
 				np := mc.lastPath[max(1, u.kind.moveSpeed)]
-				moves = append(moves, move{&u, np})
+				log.Println("Preparing move for", u.id, "from", u.position, "to", np)
+				moves = append(moves, move{u, np})
+				fmt.Println(moves)
+			} else {
+				log.Println("\tNo potential destination found")
 			}
 		}
 	}
 	for _, hit := range hits {
+		log.Println("Effecting damage", hit.damage, " made on Unit", hit.target.id, "over a radius", hit.radius, "to units of team", 3-hit.teamNo)
 		shot := damageInflicter{w, hit.teamNo, hit.damage, hit.radius == 0}
 		v := map[int]bool{hit.target.position.row*w.width + hit.target.position.col: true}
 		nc := []coordinates{hit.target.position}
@@ -103,6 +78,7 @@ func runRound(w *world, rnd *rand.Rand) bool {
 	}
 	for _, move := range moves {
 		if move.obj.isLive {
+			log.Println("Moving Unit", move.obj.id, "from", move.obj.position, "to", move.to)
 			delete(w.terrain[move.obj.position.row][move.obj.position.col].content, move.obj.id)
 			w.terrain[move.to.row][move.to.col].content[move.obj.id] = move.obj
 			w.terrain[move.obj.position.row][move.obj.position.col].occupiedSlots -= move.obj.kind.slotCount

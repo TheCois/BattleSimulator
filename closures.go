@@ -28,7 +28,7 @@ func (tc *targetChecker) verifiedBy(place cell) (bool, *unit) {
 
 type moveChecker struct {
 	field    *world
-	who      unit
+	who      *unit
 	lastPath []coordinates
 }
 
@@ -117,6 +117,7 @@ func (d *damageInflicter) verifiedBy(place cell) (bool, *unit) {
 		if u.isLive && u.teamNo != d.teamNo {
 			u.hitPoints -= max(0, d.hitPoints)
 			if u.hitPoints < 1 {
+				log.Println("Team", u.teamNo, "'s Unit", u.id, "in", u.position, "was killed")
 				u.isLive = false
 				delete(d.field.terrain[place.location.row][place.location.col].content, u.id)
 				d.field.terrain[place.location.row][place.location.col].occupiedSlots -= u.kind.slotCount

@@ -171,6 +171,6 @@ func createAndInsert(num int, uk unitKind, team int, c cell, w world) {
 			team}
 		c.content[u.id] = &u
 		c.occupiedSlots += u.kind.slotCount
-		w.liveUnits[u.id] = u
+		w.liveUnits[u.id] = &u
 	}
 }

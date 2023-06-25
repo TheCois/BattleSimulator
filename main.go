@@ -2,36 +2,39 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
+	"os"
 	"time"
 )
 
 func main() {
-	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
+	logfile, err := os.Create("app.log")
 
-	battleField := generateWorld(1000, 150, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	ttZ := generateBand(battleField, 50, 1, 1, 900)
-	ttZ.fillWith(1000000, zombieKind, 2, Pack, r1)
+	defer func(logfile *os.File) {
+		err := logfile.Close()
+		if err != nil {
 
-	ttT := generateBand(battleField, 100, 99, 100, 200)
-	ttT.fillWith(20, tankKind, 1, Uniform, r1)
+		}
+	}(logfile)
+	log.SetOutput(logfile)
 
-	ttI := generateBand(battleField, 98, 98, 100, 200)
-	ttI.fillWith(2000, infantryKind, 1, Uniform, r1)
+	var generator BattleGenerator
 
-	ttH := generateBand(battleField, 90, 90, 100, 200)
-	ttH.fillWith(10, howitzerKind, 1, Uniform, r1)
-
-	ttO := generateBand(battleField, 89, 89, 100, 200)
-	ttO.fillWith(200, operatorKind, 1, Random, r1)
+	generator = DefaultTinyGenerator{1234}
+	battleField := generator.create()
 
 	startTime := time.Now()
 	fmt.Println("Start time:", startTime)
 	round := 1
+	r1 := rand.New(rand.NewSource(123))
+
 	for runRound(&battleField, r1) {
-		fmt.Println("Round:", round, "Elapsed time:", time.Since(startTime))
+		log.Println("Round:", round, "Elapsed time:", time.Since(startTime))
 		// TODO display moves made (by each team)
 		// TODO display shots fired (by each team and unit kind)
 		// TODO display targets hit within each team
@@ -39,5 +42,6 @@ func main() {
 		// TODO display counts for each team
 		round++
 	}
-	fmt.Println("End time  :", time.Now())
+	endTime := time.Now()
+	fmt.Println("End time  :", endTime, "Elapsed", time.Since(startTime))
 }

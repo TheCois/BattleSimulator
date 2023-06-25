@@ -54,7 +54,7 @@ type world struct {
 	terrain      [][]cell
 	cells        map[int64]cell
 	slotsPerCell int
-	liveUnits    map[int64]unit
+	liveUnits    map[int64]*unit
 }
 
 type terrainArea struct {

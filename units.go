@@ -26,6 +26,32 @@ var infantryKind = unitKind{
 	slotCount:      1,
 }
 
+var peasantKind = unitKind{
+	name:           "Peasant",
+	hitPoints:      150,
+	perception:     5,
+	attackRange:    4,
+	attackAccuracy: 90,
+	attackRate:     0,
+	attackDamage:   50,
+	attackArea:     0,
+	moveSpeed:      1,
+	slotCount:      1,
+}
+
+var archerKind = unitKind{
+	name:           "Archer",
+	hitPoints:      150,
+	perception:     5,
+	attackRange:    4,
+	attackAccuracy: 50,
+	attackRate:     1,
+	attackDamage:   100,
+	attackArea:     0,
+	moveSpeed:      0,
+	slotCount:      1,
+}
+
 var operatorKind = unitKind{
 	name:           "Operator",
 	hitPoints:      200,
