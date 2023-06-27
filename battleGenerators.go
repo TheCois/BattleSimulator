@@ -47,6 +47,8 @@ func generateWorld(w int, l int, s int) world {
 // 2000 soldiers
 // 10 Howitzers
 // 200 Special Operators
+//
+//goland:noinspection GoUnusedExportedType
 type DefaultMediumGenerator struct {
 	randomizerSeed int64
 }

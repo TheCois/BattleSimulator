@@ -36,6 +36,7 @@ func main() {
 			fmt.Println(kind.name, ":", uc)
 		}
 	}
+
 	startTime := time.Now()
 	fmt.Println("Start time:", startTime)
 	round := 1
