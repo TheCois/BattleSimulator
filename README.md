@@ -1,5 +1,6 @@
 # BattleSimulator
-Go experiment recreating a BattleSimulator
+Go experiment recreating a BattleSimulator.
+Currently, only the engine (definition of Units and terrain, simulation of a battle)
 This is used to solidify my learning of Go features
 
 ## Next features
@@ -18,3 +19,4 @@ This is used to solidify my learning of Go features
 - Define an area generator for "surrounding band"
 - Define an area generator for ring
 - Define heuristic for ranged units that can back away from enemy while engaging
+- Add Loading from File
